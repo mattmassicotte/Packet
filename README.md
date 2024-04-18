@@ -18,6 +18,16 @@ dependencies: [
 ]
 ```
 
+## Usage
+
+```swift
+let fileHandle = FileHandle(...)
+
+for await data in fileHandle.chunks {
+    // read Data objects instead of one byte at a time
+}
+```
+
 ## Contributing and Collaboration
 
 I'd love to hear from you! Get in touch via [mastodon](https://mastodon.social/@mattiem), an issue, or a pull request.

@@ -6,9 +6,9 @@ let package = Package(
 	name: "Packet",
 	platforms: [
 		.macOS(.v10_15),
-		.iOS(.v12),
-		.tvOS(.v12),
-		.watchOS(.v5),
+		.iOS(.v13),
+		.tvOS(.v13),
+		.watchOS(.v6),
 		.macCatalyst(.v13),
 		.visionOS(.v1),
 	],
