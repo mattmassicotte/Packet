@@ -17,7 +17,7 @@ let package = Package(
 	],
 	targets: [
 		.target(name: "Packet"),
-		.testTarget(name: "PacketTests", dependencies: ["Packet"]),
+        .testTarget(name: "PacketTests", dependencies: ["Packet"], resources: [.copy("Resources/ipsum100k.txt")]),
 	]
 )
 
