@@ -5,11 +5,11 @@ import PackageDescription
 let package = Package(
 	name: "Packet",
 	platforms: [
-		.macOS(.v12),
+		.macOS(.v10_15),
 		.iOS(.v13),
-		.tvOS(.v15),
+		.tvOS(.v13),
 		.watchOS(.v6),
-		.macCatalyst(.v15),
+		.macCatalyst(.v13),
 		.visionOS(.v1),
 	],
 	products: [

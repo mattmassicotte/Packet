@@ -9,6 +9,7 @@ extension URLSession {
     ///
     /// Use this method to when you want to process the chunks while the transfer is underway. You can use
     /// a `for-try-await-in` loop to handle each chunk.
+    @available(iOS 15.0, macOS 12.0, macCatalyst 15.0, tvOS 15.0, watchOS 8.0, *)
     public func chunks(for url: URL) -> AsyncThrowingDataChunks {
         AsyncThrowingDataChunks { continuation in
             let dataTask = dataTask(with: url)
