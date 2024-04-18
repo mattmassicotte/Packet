@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
 	name: "Packet",
 	platforms: [
-		.macOS(.v10_15),
+		.macOS(.v12),
 		.iOS(.v13),
 		.tvOS(.v13),
 		.watchOS(.v6),
@@ -17,7 +17,7 @@ let package = Package(
 	],
 	targets: [
 		.target(name: "Packet"),
-		.testTarget(name: "PacketTests", dependencies: ["Packet"]),
+        .testTarget(name: "PacketTests", dependencies: ["Packet"], resources: [.copy("Resources/ipsum100k.txt")]),
 	]
 )
 
