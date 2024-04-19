@@ -27,10 +27,40 @@ extension URLSession {
     @available(iOS 15.0, macOS 12.0, macCatalyst 15.0, tvOS 15.0, watchOS 8.0, *)
     public func chunks(for url: URL, 
                        delegate: (any URLSessionTaskDelegate)? = nil) -> AsyncThrowingDataChunks {
+        return chunks(for: URLRequest(url: url), delegate: delegate)
+    }
+    
+    /// Retrieves the contents of a URL based on the specified URL request and delivers an asynchronous 
+    /// sequence of `Data` chunks.
+    /// - Parameter request: A URL request object that provides request-specific information
+    /// such as the URL, cache policy, request type, and body data or body stream.
+    /// - Parameter delegate: A delegate that receives life cycle and authentication challenge callbacks as the transfer progresses.
+    /// - Returns: An asynchronously delivered ``AsyncThrowingDataChunks`` sequence to iterate over
+    ///
+    /// Use this method when you want to process the bytes while the transfer is underway. You can use
+    /// a `for-await-in` loop to handle each chunk like this:
+    /// ```swift
+    /// guard let url = URL(string: "https://www.example.com") else {
+    ///     return
+    /// }
+    ///
+    /// let request = URLRequest(url)
+    /// do {
+    ///     // Read each chunk of the data as it becomes available
+    ///     for try await chunk in URLSession.chunks(for: request) {
+    ///         // Do something with chunk
+    ///     }
+    /// } catch {
+    ///     print("Error: \(error)")
+    /// }
+    /// ```
+    @available(iOS 15.0, macOS 12.0, macCatalyst 15.0, tvOS 15.0, watchOS 8.0, *)
+    public func chunks(for request: URLRequest,
+                       delegate: (any URLSessionTaskDelegate)? = nil) -> AsyncThrowingDataChunks {
         AsyncThrowingDataChunks { continuation in
-            let dataTask = dataTask(with: url)
-            dataTask.delegate = DataChunksTaskDelegate(withContinuation: continuation, delegate: delegate)
-            
+            let dataTask = dataTask(with: request)
+            dataTask.delegate = DataChunksTaskDelegate(withContinuation: continuation,
+                                                       delegate: delegate)
             
             dataTask.resume()
         }
