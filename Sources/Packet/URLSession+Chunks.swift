@@ -100,14 +100,24 @@ extension DataChunksTaskDelegate: URLSessionDataDelegate {
                            willPerformHTTPRedirection response: HTTPURLResponse,
                            newRequest request: URLRequest,
                            completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
-        delegate?.urlSession?(session, task: task, willPerformHTTPRedirection: response, newRequest: request, completionHandler: completionHandler)
+        if let delegate,
+           delegate.responds(to: #selector(URLSessionTaskDelegate.urlSession(_:task:willPerformHTTPRedirection:newRequest:))) {
+            delegate.urlSession?(session, task: task, willPerformHTTPRedirection: response, newRequest: request, completionHandler: completionHandler)
+        } else {
+            completionHandler(request)
+        }
     }
     
     public func urlSession(_ session: URLSession, 
                            task: URLSessionTask,
                            didReceive challenge: URLAuthenticationChallenge,
                            completionHandler: @escaping @Sendable (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        delegate?.urlSession?(session, task: task, didReceive: challenge, completionHandler: completionHandler)
+        if let delegate,
+           delegate.responds(to: #selector(URLSessionTaskDelegate.urlSession(_:task:didReceive:completionHandler:))) {
+            delegate.urlSession?(session, task: task, didReceive: challenge, completionHandler: completionHandler)
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+        }
     }
     
     public func urlSession(_ session: URLSession, 
