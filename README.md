@@ -10,6 +10,8 @@
 
 A collection of utilities for working with `Data` and `AsyncSequence`.
 
+Lots of stuff here is Foundation-specific. But, the idea is to compliment [async-algorithms](https://github.com/apple/swift-async-algorithms), not overlap. 
+
 ## Integration
 
 ```swift
@@ -20,11 +22,32 @@ dependencies: [
 
 ## Usage
 
+`FileHandle` support:
+
 ```swift
 let fileHandle = FileHandle(...)
 
 for await data in fileHandle.chunks {
-    // read Data objects instead of one byte at a time
+    // use Data value here
+}
+```
+
+`URLSession` support. This offers a [considerable performance benefit](https://falsevictories.com/devdiary/#20241804).
+
+```swift
+let stream = URLSession.shared.chunks(for: url)
+for try await data in stream {
+    // use Data value here
+}
+```
+
+Sometimes, to make things work with an existing API, you need to un-chunk a sequence. `AsyncByteSequence` converts a sequence of `Data` into a sequence of `UInt8`. This is inherently less-efficient, but can be a lot less work than changing the consumer.
+
+```swift
+let bytes = AsyncByteSequence(dataSequence)
+
+for try await byte in bytes {
+    // one byte at a time
 }
 ```
 
