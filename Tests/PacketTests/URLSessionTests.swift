@@ -28,7 +28,8 @@ final class URLSessionTests: XCTestCase {
         let fileSize = attrs[.size] as? UInt64 ?? UInt64(0)
         
         var byteCount = 0
-        let chunkStream = URLSession.shared.chunks(for: testURL!)
+        let (chunkStream, _) = try await URLSession.shared.chunks(for: testURL!)
+        
         for try await data in chunkStream {
             byteCount += data.count
         }
@@ -46,7 +47,7 @@ final class URLSessionTests: XCTestCase {
         
         var byteCount = 0
         let request = URLRequest(url: testURL!)
-        let chunkStream = URLSession.shared.chunks(for: request)
+        let (chunkStream, _) = try await URLSession.shared.chunks(for: request)
         for try await data in chunkStream {
             byteCount += data.count
         }
@@ -59,7 +60,7 @@ final class URLSessionTests: XCTestCase {
         // Replace the session's URLResponder that fakes an authentication challenge
         // to make sure the delegate is handling it correctly
         let session = URLSession(mockResponder: SuccessfulResponder.self)
-        let chunkStream = session.chunks(for: URL(string:"\(MockSchemes.authenticate.rawValue)://fakefile")!)
+        let (chunkStream, _) = try await session.chunks(for: URL(string:"\(MockSchemes.authenticate.rawValue)://fakefile")!)
         for try await _ in chunkStream {
             // Don't really care about the chunk in this case, it's been tested
             // earlier, just testing that an authentication request doesn't fail
@@ -68,10 +69,10 @@ final class URLSessionTests: XCTestCase {
 
     @available(iOS 16.0, macOS 13.0, macCatalyst 16.0, tvOS 16.0, watchOS 9.0, *)
     func testRedirectDelegate() async throws {
-        // Replace the session's URLResponder that fakes an authentication challenge
+        // Replace the session's URLResponder that fakes a redirect
         // to make sure the delegate is handling it correctly
         let session = URLSession(mockResponder: SuccessfulResponder.self)
-        let chunkStream = session.chunks(for: URL(string:"\(MockSchemes.redirect.rawValue)://fakefile")!)
+        let (chunkStream, _) = try await session.chunks(for: URL(string:"\(MockSchemes.redirect.rawValue)://fakefile")!)
         for try await _ in chunkStream {
             // Don't really care about the chunk in this case, it's been tested
             // earlier, just testing that an authentication request doesn't fail
@@ -87,10 +88,11 @@ final class URLSessionTests: XCTestCase {
     
     @available(iOS 16.0, macOS 13.0, macCatalyst 16.0, tvOS 16.0, watchOS 9.0, *)
     private func errorStream() async throws {
-        // Replace the session's URLResponder that fakes an authentication challenge
+        // Replace the session's URLResponder that fakes an error
         // to make sure the delegate is handling it correctly
         let session = URLSession(mockResponder: SuccessfulResponder.self)
-        let chunkStream = session.chunks(for: URL(string:"\(MockSchemes.error.rawValue)://fakefile")!)
+        let (chunkStream, _) = try await session.chunks(for: URL(string:"\(MockSchemes.error.rawValue)://fakefile")!)
+        
         for try await _ in chunkStream {
             // Don't really care about the chunk in this case, it's been tested
             // earlier, just testing that an authentication request doesn't fail
