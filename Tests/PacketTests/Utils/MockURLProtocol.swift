@@ -67,15 +67,16 @@ class MockURLProtocol<Responder: MockURLResponder>: URLProtocol, URLAuthenticati
                                    wasRedirectedTo: newRequest,
                                    redirectResponse: response)
             }
-            
-            if scheme == MockSchemes.error.rawValue {
-                throw MockError.errorRequested
-            }
-            
+                        
             client.urlProtocol(self,
                                didReceive: response,
                                cacheStoragePolicy: .notAllowed
             )
+            
+            if scheme == MockSchemes.error.rawValue {
+                throw MockError.errorRequested
+            }
+
             client.urlProtocol(self, didLoad: data)
         } catch {
             client.urlProtocol(self, didFailWithError: error)
